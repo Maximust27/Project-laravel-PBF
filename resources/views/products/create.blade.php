@@ -37,7 +37,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="harga" class="form-label">Harga (Rp) <span class="text-danger">*</span></label>
                                     <div class="input-group">
@@ -50,7 +50,18 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="stok" class="form-label">Stok Barang <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('stok') is-invalid @enderror" 
+                                           id="stok" name="stok" value="{{ old('stok', 1) }}" min="1" required>
+                                    <div class="form-text">Jumlah tersedia</div>
+                                    @error('stok')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="kondisi" class="form-label">Kondisi <span class="text-danger">*</span></label>
                                     <select class="form-select @error('kondisi') is-invalid @enderror" 

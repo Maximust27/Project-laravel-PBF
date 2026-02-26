@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ProductController 
+class ProductController
 {
     /**
      * Display a listing of the resource.
@@ -52,6 +52,7 @@ class ProductController
             'nama_barang' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:1', // Validasi stok
             'kondisi' => 'required|in:baru,bekas',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -106,6 +107,7 @@ class ProductController
             'nama_barang' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0', // Validasi stok
             'kondisi' => 'required|in:baru,bekas',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

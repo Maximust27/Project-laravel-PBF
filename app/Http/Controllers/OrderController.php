@@ -8,8 +8,9 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
-class OrderController 
+class OrderController
 {
     /**
      * Display a listing of the user's orders.
@@ -111,7 +112,7 @@ class OrderController
     }
 
     /**
-     * Mark order as completed.
+     * Mark order as completed & Auto Delete Produk jika stok habis.
      */
     public function complete(Order $order)
     {
@@ -126,9 +127,42 @@ class OrderController
                 ->with('error', 'Pesanan sudah selesai!');
         }
 
-        $order->update(['status' => 'selesai']);
+        try {
+            DB::beginTransaction();
+            
+            $order->update(['status' => 'selesai']);
 
-        return redirect()->route('orders.show', $order)
-            ->with('success', 'Pesanan berhasil diselesaikan!');
+            // Proses Pengurangan Stok & Auto Delete
+            $order->load('orderItems.product');
+            foreach ($order->orderItems as $item) {
+                $product = $item->product;
+                
+                // Jika produk masih ada di database
+                if ($product) {
+                    $product->stok -= $item->quantity; // Kurangi stok
+                    
+                    if ($product->stok <= 0) {
+                        // Jika stok habis (0 atau kurang), hapus foto dan produk
+                        if ($product->foto) {
+                            Storage::disk('public')->delete($product->foto);
+                        }
+                        $product->delete();
+                    } else {
+                        // Jika stok masih ada sisa, cukup update datanya
+                        $product->save();
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', 'Pesanan berhasil diselesaikan!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('orders.show', $order)
+                ->with('error', 'Terjadi kesalahan sistem.');
+        }
     }
 }

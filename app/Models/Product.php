@@ -19,6 +19,7 @@ class Product extends Model
         'nama_barang',
         'deskripsi',
         'harga',
+        'stok', // Tambahan input stok
         'foto',
         'kondisi',
     ];

@@ -44,7 +44,7 @@
             @foreach($products as $product)
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card product-card h-100">
-                        <img src="{{ $product->foto_url }}" class="card-img-top" alt="{{ $product->nama_barang }}">
+                        <img src="{{ Storage::url($product->foto_url) }}" class="card-img-top" alt="{{ $product->nama_barang }}">
                         <div class="card-body">
                             <span class="badge {{ $product->kondisi == 'baru' ? 'bg-success' : 'bg-warning text-dark' }} condition-badge mb-2">
                                 {{ ucfirst($product->kondisi) }}
